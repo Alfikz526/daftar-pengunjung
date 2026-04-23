@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Buku Tamu Digital – Kelompok 5</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink:    #ff7eb3;
+      --orange:  #ff9a5c;
+      --yellow:  #ffe566;
+      --mint:    #6de8c8;
+      --lavender:#c9a4f5;
+      --white:   #ffffff;
+      --text-dark:#2d1f3d;
+      --text-mid: #5a4070;
+      --card-bg: rgba(255,255,255,0.45);
+      --card-blur:blur(18px);
+      --radius-lg:28px;
+      --radius-sm:14px;
+      --shadow-card:0 8px 40px rgba(180,100,160,0.18);
+      --shadow-btn: 0 8px 28px rgba(255,100,120,0.45);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-dark);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      background: linear-gradient(145deg, #ffd6e7 0%, #ffe8c2 35%, #d4f5e9 70%, #e8d5ff 100%);
+      position: relative;
+    }
+
+    /* ── Floral SVG background pattern ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg opacity='0.13'%3E%3C!-- flower 1 --%3E%3Ccircle cx='40' cy='40' r='8' fill='%23ff7eb3'/%3E%3Ccircle cx='55' cy='30' r='7' fill='%23ff7eb3'/%3E%3Ccircle cx='55' cy='50' r='7' fill='%23ff7eb3'/%3E%3Ccircle cx='25' cy='30' r='7' fill='%23ff7eb3'/%3E%3Ccircle cx='25' cy='50' r='7' fill='%23ff7eb3'/%3E%3Ccircle cx='40' cy='40' r='5' fill='%23ffe566'/%3E%3C!-- stem --%3E%3Cline x1='40' y1='48' x2='40' y2='70' stroke='%236de8c8' stroke-width='2.5' stroke-linecap='round'/%3E%3Cellipse cx='34' cy='62' rx='7' ry='4' transform='rotate(-30 34 62)' fill='%236de8c8'/%3E%3C!-- flower 2 --%3E%3Ccircle cx='160' cy='80' r='7' fill='%23c9a4f5'/%3E%3Ccircle cx='173' cy='72' r='6' fill='%23c9a4f5'/%3E%3Ccircle cx='173' cy='88' r='6' fill='%23c9a4f5'/%3E%3Ccircle cx='147' cy='72' r='6' fill='%23c9a4f5'/%3E%3Ccircle cx='147' cy='88' r='6' fill='%23c9a4f5'/%3E%3Ccircle cx='160' cy='80' r='4' fill='%23ffe566'/%3E%3Cline x1='160' y1='87' x2='160' y2='108' stroke='%236de8c8' stroke-width='2' stroke-linecap='round'/%3E%3Cellipse cx='154' cy='100' rx='6' ry='3.5' transform='rotate(-25 154 100)' fill='%236de8c8'/%3E%3C!-- small daisy --%3E%3Ccircle cx='100' cy='170' r='6' fill='%23ff9a5c'/%3E%3Ccircle cx='100' cy='160' r='5' fill='%23ff9a5c'/%3E%3Ccircle cx='100' cy='180' r='5' fill='%23ff9a5c'/%3E%3Ccircle cx='91' cy='165' r='5' fill='%23ff9a5c'/%3E%3Ccircle cx='109' cy='165' r='5' fill='%23ff9a5c'/%3E%3Ccircle cx='91' cy='175' r='5' fill='%23ff9a5c'/%3E%3Ccircle cx='109' cy='175' r='5' fill='%23ff9a5c'/%3E%3Ccircle cx='100' cy='170' r='4' fill='%23ffe566'/%3E%3C!-- tiny dots --%3E%3Ccircle cx='130' cy='30' r='3' fill='%23ff7eb3'/%3E%3Ccircle cx='80' cy='120' r='3' fill='%23c9a4f5'/%3E%3Ccircle cx='190' cy='150' r='3' fill='%236de8c8'/%3E%3Ccircle cx='20' cy='190' r='3' fill='%23ff9a5c'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 220px 220px;
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 18px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* ── Floating petals decoration ── */
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 50% 0 50% 0;
+      opacity: 0.22;
+      animation: drift linear infinite;
+    }
+    @keyframes drift {
+      0%   { transform: translateY(-40px) rotate(0deg);   opacity: 0; }
+      10%  { opacity: 0.22; }
+      90%  { opacity: 0.18; }
+      100% { transform: translateY(105dvh) rotate(420deg); opacity: 0; }
+    }
+
+    /* ── Header ── */
+    .header {
+      width: 100%;
+      text-align: center;
+      padding: 48px 10px 10px;
+    }
+
+    /* Decorative flowers row */
+    .flowers-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .flower-icon {
+      font-size: 2.2rem;
+      display: inline-block;
+      animation: floatBob 3s ease-in-out infinite;
+      filter: drop-shadow(0 3px 6px rgba(200,80,140,0.25));
+    }
+    .flower-icon:nth-child(2) { animation-delay: 0.4s; font-size: 2.7rem; }
+    .flower-icon:nth-child(3) { animation-delay: 0.8s; }
+    .flower-icon:nth-child(4) { animation-delay: 1.2s; font-size: 2.7rem; }
+    .flower-icon:nth-child(5) { animation-delay: 1.6s; }
+    @keyframes floatBob {
+      0%,100% { transform: translateY(0) rotate(-4deg); }
+      50%      { transform: translateY(-8px) rotate(4deg); }
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--pink), var(--orange));
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 14px rgba(255,126,179,0.4);
+    }
+
+    .header h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2.4rem, 10vw, 3.2rem);
+      line-height: 1.15;
+      background: linear-gradient(135deg, #d93b8b 0%, #f96d2b 55%, #8b44c8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+      text-shadow: none;
+      filter: drop-shadow(0 2px 6px rgba(200,80,140,0.18));
+    }
+
+    .header p {
+      font-size: 0.92rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+      max-width: 320px;
+      margin: 0 auto;
+      font-weight: 500;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: 60px;
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--pink), var(--orange), var(--yellow));
+      margin: 22px auto 28px;
+    }
+
+    /* ── Card (Glassmorphism) ── */
+    .card {
+      width: 100%;
+      background: var(--card-bg);
+      backdrop-filter: var(--card-blur);
+      -webkit-backdrop-filter: var(--card-blur);
+      border: 1.5px solid rgba(255,255,255,0.65);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px 28px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, rgba(255,126,179,0.18), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 130px; height: 130px;
+      background: radial-gradient(circle, rgba(109,232,200,0.18), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title span { font-size: 1.3rem; }
+
+    /* ── Form fields ── */
+    .field {
+      margin-bottom: 16px;
+    }
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      margin-bottom: 7px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.6);
+      border: 1.8px solid rgba(200,160,220,0.35);
+      border-radius: var(--radius-sm);
+      padding: 13px 16px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .field textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: #bba0cc;
+      font-size: 0.88rem;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 4px rgba(255,126,179,0.15);
+      background: rgba(255,255,255,0.85);
+    }
+
+    /* Custom select arrow */
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '▾';
+      position: absolute;
+      right: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--pink);
+      pointer-events: none;
+      font-size: 1rem;
+    }
+    .field select { padding-right: 36px; cursor: pointer; }
+
+    /* Rating stars */
+    .stars-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .star-btn {
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      filter: grayscale(1);
+      transition: filter 0.2s, transform 0.15s;
+      padding: 0;
+      line-height: 1;
+    }
+    .star-btn.active { filter: grayscale(0); }
+    .star-btn:hover  { transform: scale(1.2); filter: grayscale(0); }
+
+    /* ── CTA Button ── */
+    .btn-submit {
+      width: 100%;
+      margin-top: 10px;
+      padding: 16px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--pink) 0%, var(--orange) 100%);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #ff9a5c 0%, #ff7eb3 100%);
+      opacity: 0;
+      transition: opacity 0.25s;
+      z-index: -1;
+    }
+    .btn-submit:hover::before  { opacity: 1; }
+    .btn-submit:active         { transform: scale(0.96); box-shadow: 0 4px 14px rgba(255,100,120,0.35); }
+    .btn-submit:hover          { transform: scale(1.025); box-shadow: 0 12px 36px rgba(255,100,120,0.55); }
+    .btn-submit:disabled       { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* Loading spinner inside button */
+    .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 3px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-submit.loading .btn-text { display: none; }
+    .btn-submit.loading .spinner  { display: block; }
+
+    /* ── Thank-you state ── */
+    .thankyou {
+      display: none;
+      text-align: center;
+      padding: 10px 0 6px;
+      animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    @keyframes popIn {
+      0%   { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+    .thankyou .ty-emoji { font-size: 3.5rem; margin-bottom: 10px; display: block; }
+    .thankyou h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.1rem;
+      background: linear-gradient(135deg, #d93b8b, #f96d2b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .thankyou p {
+      font-size: 0.9rem;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(90,64,112,0.55);
+      padding-top: 10px;
+      font-weight: 500;
+    }
+    .footer strong { color: var(--text-mid); }
+
+    /* ── Error message ── */
+    .error-msg {
+      display: none;
+      background: rgba(255,80,80,0.12);
+      border: 1px solid rgba(255,80,80,0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #c0392b;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,126,179,0.4); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <!-- Floating petals (JS injects them) -->
+
+  <div class="page">
+
+    <!-- ── HEADER ── -->
+    <header class="header">
+      <div class="flowers-row" aria-hidden="true">
+        <span class="flower-icon">🌷</span>
+        <span class="flower-icon">🌸</span>
+        <span class="flower-icon">🌼</span>
+        <span class="flower-icon">🌺</span>
+        <span class="flower-icon">🌻</span>
+      </div>
+
+      <div class="header-badge">✦ Kelompok 5 ✦</div>
+
+      <h1>Halo dari Kelompok 5!</h1>
+
+      <p>Terima kasih sudah mampir di stand kami yang penuh warna 🌸.<br>
+         Tinggalkan jejakmu di sini, ya!</p>
+    </header>
+
+    <div class="divider"></div>
+
+    <!-- ── FORM CARD ── -->
+    <div class="card">
+
+      <!-- Form view -->
+      <div id="formView">
+        <p class="card-title"><span>📝</span> Isi Buku Tamu</p>
+
+        <div class="field">
+          <label for="nama">Nama Kamu</label>
+          <input type="text" id="nama" name="nama"
+                 placeholder="Ketik nama cantikmu di sini..." autocomplete="name" />
+        </div>
+
+        <div class="field">
+          <label for="asal">Asal / Instansi</label>
+          <input type="text" id="asal" name="asal"
+                 placeholder="Sekolah, kampus, atau komunitas..." autocomplete="organization" />
+        </div>
+
+        <div class="field">
+          <label for="kesan">Kesan & Pesan</label>
+          <textarea id="kesan" name="kesan"
+                    placeholder="Tulis kesan manis kamu tentang stand kami..."></textarea>
+        </div>
+
+        <div class="field">
+          <label>Rating Stand Kami</label>
+          <div class="stars-row" id="starsRow" role="group" aria-label="Rating bintang">
+            <button type="button" class="star-btn" data-val="1" aria-label="1 bintang">⭐</button>
+            <button type="button" class="star-btn" data-val="2" aria-label="2 bintang">⭐</button>
+            <button type="button" class="star-btn" data-val="3" aria-label="3 bintang">⭐</button>
+            <button type="button" class="star-btn" data-val="4" aria-label="4 bintang">⭐</button>
+            <button type="button" class="star-btn" data-val="5" aria-label="5 bintang">⭐</button>
+          </div>
+        </div>
+
+        <button class="btn-submit" id="submitBtn" type="button" onclick="kirimData()">
+          <span class="btn-text">Hadir! ✨</span>
+          <span class="spinner"></span>
+        </button>
+
+        <div class="error-msg" id="errorMsg">
+          😢 Waduh, ada masalah saat mengirim. Coba lagi, ya!
+        </div>
+      </div>
+
+      <!-- Thank-you view -->
+      <div class="thankyou" id="thankYouView">
+        <span class="ty-emoji">🥳</span>
+        <h2>Makasih banyak!</h2>
+        <p>Nama kamu sudah tercatat di buku tamu kami.<br>
+           Senang banget kamu mampir! Semoga harimu seindah bunga mekar 🌸💛</p>
+      </div>
+
+    </div>
+    <!-- end .card -->
+
+    <div class="footer">
+      Made with 💖 by <strong>Kelompok 5</strong> &nbsp;·&nbsp; 2026
+    </div>
+
+  </div><!-- end .page -->
+
+
+  <script>
+    /* ─── Config ─── */
+    const APPS_SCRIPT_URL =
+      'https://script.google.com/macros/s/AKfycbxettZ3rUyRsShteGdNE5kf8iKUjttfrXfteVk_vHzkPBKg3CYiqSGLh2wJ2N0kG7uzOw/exec';
+
+    /* ─── Floating Petals ─── */
+    (function spawnPetals() {
+      const colors = ['#ffb3d1','#ffc89a','#b8f5e4','#e4c8ff','#fff0a0'];
+      const sizes  = [10, 14, 18, 22];
+      for (let i = 0; i < 14; i++) {
+        const el = document.createElement('div');
+        el.className = 'petal';
+        const sz   = sizes[Math.floor(Math.random() * sizes.length)];
+        const col  = colors[Math.floor(Math.random() * colors.length)];
+        const dur  = 9 + Math.random() * 12;
+        const del  = Math.random() * 14;
+        const left = Math.random() * 100;
+        el.style.cssText = `
+          width:${sz}px; height:${sz*0.6}px;
+          background:${col};
+          left:${left}vw; top:-30px;
+          animation-duration:${dur}s;
+          animation-delay:-${del}s;
+          border-radius:${Math.random()>0.5?'50% 0 50% 0':'0 50% 0 50%'};
+        `;
+        document.body.appendChild(el);
+      }
+    })();
+
+    /* Rating Standnya tar ini */
+    let selectedRating = 0;
+    document.querySelectorAll('.star-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedRating = parseInt(btn.dataset.val);
+        document.querySelectorAll('.star-btn').forEach(b => {
+          b.classList.toggle('active', parseInt(b.dataset.val) <= selectedRating);
+        });
+        /* tiny bounce */
+        btn.animate([{transform:'scale(1.3)'},{transform:'scale(1)'}],
+                    {duration:220, easing:'cubic-bezier(.34,1.56,.64,1)'});
+      });
+    });
+
+    /* ─── Submit ─── */
+    async function kirimData() {
+      const nama  = document.getElementById('nama').value.trim();
+      const asal  = document.getElementById('asal').value.trim();
+      const kesan = document.getElementById('kesan').value.trim();
+      const errEl = document.getElementById('errorMsg');
+      errEl.style.display = 'none';
+
+      if (!nama) {
+        document.getElementById('nama').focus();
+        document.getElementById('nama').style.borderColor = 'var(--pink)';
+        document.getElementById('nama').animate(
+          [{transform:'translateX(-6px)'},{transform:'translateX(6px)'},
+           {transform:'translateX(-4px)'},{transform:'translateX(4px)'},
+           {transform:'translateX(0)'}],
+          {duration:300});
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      const payload = {
+        nama,
+        asal,
+        kesan,
+        rating: selectedRating || '–',
+        waktu: new Date().toLocaleString('id-ID', {
+          timeZone:'Asia/Jakarta',
+          dateStyle:'full', timeStyle:'short'
+        })
+      };
+
+      try {
+        /* Google Apps Script requires no-cors for simple forms */
+        await fetch(APPS_SCRIPT_URL, {
+          method : 'POST',
+          mode   : 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body   : JSON.stringify(payload)
+        });
+        showThankYou();
+      } catch (err) {
+        console.error(err);
+        errEl.style.display = 'block';
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    }
+
+    function showThankYou() {
+      document.getElementById('formView').style.display    = 'none';
+      const ty = document.getElementById('thankYouView');
+      ty.style.display = 'block';
+      /* confetti-like emoji burst */
+      const emojis = ['🌸','🌼','✨','🎉','💛','🌷'];
+      for (let i = 0; i < 18; i++) {
+        const span = document.createElement('span');
+        span.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        span.style.cssText = `
+          position:fixed;
+          font-size:${1.2+Math.random()*1.4}rem;
+          left:${10+Math.random()*80}vw;
+          top:${20+Math.random()*60}vh;
+          pointer-events:none;
+          z-index:999;
+          animation:confettiFly ${0.8+Math.random()*0.8}s ease-out forwards;
+          animation-delay:${Math.random()*0.4}s;
+        `;
+        document.body.appendChild(span);
+        setTimeout(() => span.remove(), 2000);
+      }
+    }
+
+    /* Confetti keyframes injected once */
+    const s = document.createElement('style');
+    s.textContent = `
+      @keyframes confettiFly {
+        0%   { transform: translateY(0) scale(1);   opacity: 1; }
+        100% { transform: translateY(-120px) scale(0); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(s);
+  </script>
+</body>
+</html>
